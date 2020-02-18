@@ -1,0 +1,14 @@
+#app{
+	margin: 1.2em;
+}
+.bg-dark{
+	padding: 2em 11em 1em 5em;
+	    margin-top: 1em;
+	    margin-left: 1.2em!important;
+
+}
+.bg-info{
+	padding: 0 11em 1em 5em;
+	    margin-top: 1em;
+
+}

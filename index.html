@@ -1,28 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="index.css">
-    <title>Web Dev Lab</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+        <script src="https://kit.fontawesome.com/5573336fe4.js"  crossorigin="anonymous"></script>
+        
+    <!-- vue js framework -->
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <title></title>
 </head>
+
 <body>
+    <div id="app">
+        <div class="container-fluid">
+            <div class="row row-header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/Simple_gold_cup.svg" class="rounded-circle logo" alt="My company">
+            </div>
+            <div class="col-sm-6">
+                <h1>Inventory</h1>
+                <p>Use the form to add Product</p>
+            </div>
+            <div class="col-sm-4">
+                <div class="alert alert-danger my-alert" role="alert" v-show="!isValid">
+                    <p><i class="fas fa-exclamation-triangle"></i>Please Enter Required</p>
+                </div>
+            </div>
+        </div>
+        <div class="row bg-light text-dark">
+            <div class="col-sm-6">
+                <form @submit.prevent>
+                    <div class="form-group">
+                        <label for="productName"> Product Name</label>
+                        <input class="form-control" placeholder="Name of product" id="productName" v-model="productName">
+                    </div>
+                    <div class="form-group">
+                        <label for="productDescription"> Product Description</label>
+                        <input class="form-control" placeholder="Description of product" id="description" v-model="description">
+                    </div>
+                    <div class="form-group">
+                        <label for="stock"> Stock</label>
+                        <input type="number" class="form-control" placeholder="Number in stock" id="stock" 
+                        v-model="stock" :class="{ error : lowStock }" @change="validate">
+                    </div>
+                    <div class="form-group">
+                        <label for="price"> Price</label>
+                        <input type="number" step="0.01" class="form-control" placeholder="Product price" id="price" v-model="price" @change="validate">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryId"> Category *</label>
+                        <select class="form-control" id="categoryId" v-model="categoryId">
+                            <option v-for="option in categories" :value="option.id">{{ option.categoryName }}</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" v-on:click="addProduct">Add</button>
+                        <button class="btn btn-primary" v-on:click="updateProduct">Update</button>
+                        <button class="btn btn-secondary" v-on:click="resetProduct">Reset</button>
+                       
+                    </div>
+                </form>
+            </div>
+            <div class="row bg-light text-dark col-sm-6">
+                <div class=" bg-secondary">
+                    <div class="row-table">
+                        <table class="table table-dark table-hover bg-secondary">
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Description</th>
+                                    <th>Stock</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                </tr>
+                                <tbody>
+                                    <tr v-for="row in products" v-on:click="clickProduct(row)" :class="{selected: row.selected }">
+                                        <td>{{row.id}}</td>
+                                        <td>{{row.productName}}</td>
+                                        <td>{{row.description}}</td>
+                                        <td>{{row.stock}}</td>
+                                        <td>{{row.price}}</td>
+                                        <td>{{row.category}}</td>
+                                        <td class="center-column">
+                                            <a href="javascript:;" v-on:click="deleteProduct($event, row)"><i class="fas fa-minus-circle"></i></a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="row bg-dark text-white">
+                <h3>Product List:{{productCount}}</h3>
+            </div>
+            <div class="row bg-info text-white">
+                <ol class="order-list">
+                    <product-item v-for="item in products" v-bind:product="item" v-bind:key="item.name">
+                    </product-item>
+                </ol>
+            </div>
+        </div>
 
-    <h1 id="lab3">Page Heading</h1>
-
-    <!-- <form action=""> -->
-        <label for="inputA">Enter a Value</label>
-        <input id="inputA" type="text"> 
-        <button onclick="getInput()">Display in Console</button>
-        <button onclick="showOutput()">Display</button>
-
-        <h2 id="output"></h2>
-    <!-- </form> -->
-    <div id="paragraph">
-        <p><h2>Paragraphs</h2></p>
-    </div>
-    <script src="index.js"></script>
-    
+</div>
+        <script type="text/javascript" src="index.js"></script>
 </body>
+
 </html>
