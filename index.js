@@ -50,7 +50,26 @@ var app = new Vue({
 			},
 			
 		],
+
+
+		//Use for search and sort
+	originalProducts:[],
+	//use for search
+	search:{
+		id: '',
+		productName: '',
+		description: '',
+		stock: '',
+		price: '',
+		category: '',
 	},
+	// Use for sorting
+	sortItem: {
+		column: null,
+		direction: null,
+	},
+	},
+	
 	computed:{
 		productCount(){
 			return this.products.length;
@@ -58,10 +77,121 @@ var app = new Vue({
 		lowStock(){
 			return !this.isNew && this.stock < 5;
 		},
+		sortIconId(){
+			return this.sortIcon('id');
+		},
+		sortIconProductName(){
+			return this.sortIcon('productName');
+		},
+		sortIconDescription(){
+			return this.sortIcon('description');
+		},
+		sortIconStock(){
+			return this.sortIcon('stock');
+		},
+		sortIconPrice(){
+			return this.sortIcon('price');
+		},
+		sortIconCategory(){
+			return this.sortIcon('category');
+		},
 	},
 	methods:{
-		lowStock(){
-			return this.stock < 1;
+		productSearch(){
+			if(this.originalProducts.length === 0){
+				this.originalProducts = [...this.products];
+			}
+			results = this.products;
+			if (this.search.id){
+				results = results.filter((data)  => {
+					return this.search.id == data.id;
+				})
+			}
+		if (this.search.productName){
+			results = results.filter((data) => {
+				return this.search.productName === data.productName;
+			})
+		}
+		if (this.search.description){
+			results = results.filter((data) => {
+				return this.search.description === data.description;
+			})
+		}
+		if(this.search.stock){
+			results = results.filter((data) => {
+				return this.search.stock == data.stock;
+			})
+		}
+		if(this.search.price){
+			results = results.filter((data) => {
+				return this.search.price == data.price;
+			})
+		}
+		if(this.search.category){
+			results = results.filter((data) => {
+				return this.search.category == this.getCategoryId(data.category);
+			})
+		}
+		this.products = results;
+		},
+		sortIcon(column){
+			if (column === this.sortItem.column){
+				if(this.sortItem.description === 'up'){
+					return 'fas fa-sort-up';
+				} else if(this.sortItem.description === 'down'){
+					return 'fas fa-sort-down';
+				}
+			} else{
+				return '';
+			}
+		},
+		sortClick(column){
+			if(this.originalProducts.length === 0){
+				this.originalProducts = [...this.products];
+			}
+			this.sortItem.column = column;
+			if(this.sortItem.direction === 'up'){
+				this.sortItem.direction = 'down';
+				this.products = this.products.sort(this.reverseCompare);
+			}else{
+				this.sortItem.description = 'up';
+				this.products = this.products.sort(this.compare);
+			}
+		},
+		compare(a, b){
+			let itemA;
+			let itemB;
+			if(typeof a[this.sortItem.column] === 'string'){
+				itemA = a[this.sortItem.column].toUpperCase();
+				itemB = b[this.sortItem.column].toUpperCase();
+			}else {
+				itemA = a[this.sortItem.column];
+				itemB = b[this.sortItem.column];
+			}
+			if (itemA > itemB){
+				return 1;
+			}else if (itemA < itemB){
+				return -1;
+			}else {
+				//a equals b
+				return 0;
+			}
+		},
+		reverseCompare(a, b){
+			return this.compare(b, a);
+		},
+		resetSearchSort(){
+			if (this.originalProducts.length > 0){
+				this.products = [...this.originalProducts];
+			}
+			this.search.id = '';
+			this.search.productName = '';
+			this.search.description = '';
+			this.search.stock = '';
+			this.search.price = '';
+			this.search.category = '';
+			this.search.column = null;
+			this.search.direction = null;
 		},
 		validate(){
 			this.isNew = false;
@@ -69,7 +199,7 @@ var app = new Vue({
 				return category.id == this.categoryId;
 				});
 			//line 72 this.lowStock() wasn't wor	king
-				if(!this.productName || this.productName.length < 3 || this.lowStock() || this.price < 10 || category.length === 0){
+				if(!this.productName || this.productName.length < 3 || this.lowStock || this.price < 10 || category.length === 0){
 					this.isValid = false;
 				}	
 				else{
@@ -91,13 +221,13 @@ var app = new Vue({
 			category: category[0].categoryName,
 		};
 		this.products.push(newProduct);
-		this.resetProduct();
+		this.resetProduct2();
 	},
-	resetProduct(){
+	resetProduct2(){
 		this.productName = null;
 		this.description= null;
-		this.stock  = 0,
-		this.price = 0,
+		this.stock  = 0;
+		this.price = 0;
 		this.categoryId = null;
 	},
 	deleteProduct(event, row){
@@ -145,7 +275,7 @@ var app = new Vue({
 			}
 		}
 		this.products[arrayIndex] = currentProduct;
-		this.resetProduct();
+		this.resetProduct1();
 	},
 	resetProduct(){
 		this.isNew = true;

@@ -73,7 +73,38 @@
                         <table class="table table-dark table-hover bg-secondary">
                             <thead>
                                 <tr>
-                                    <th>Id</th>
+                                    <th><input class="form-control search-small" placeholder="Id" v-model="search.id"></th>
+                                    <th><input class="form-control" placeholder="Name" v-model="search.productName"></th>
+                                    <th><input class="form-control" placeholder="Description" v-model="search.description"></th>
+                                    <th><input class="form-control search-small" placeholder="Stock" v-model="search.stock"></th>
+                                    <th><input class="form-control search-small" placeholder="Price" v-model="search.price"></th>
+                                    <th>
+                                        <select class="form-control" v-model="search.category">
+                                            <option value="" disabled selected>Category</option>
+                                            <option v-for="option in categories" :value="option.id">{{option.categoryName}}</option>
+                                        </select>
+                                    </th>
+                                    <th>
+                                    <button class="btn btn-primary" v-on:click="productSearch">Find</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th class="sort" v-on:click="sortClick('id')">ID<i :class="sortIconId"></i></th>
+                                    <th class="sort" v-on:click="sortClick('productName')">Name<i :class="sortIconProductName"></i></th>
+                                    <th class="sort" v-on:click="sortClick('description')">Description<i :class="sortIconDescription"></i></th>
+                                    <th class="sort" v-on:click="sortClick('stock')">Stock<i :class="sortIconStock"></i></th>
+                                    <th class="sort" v-on:click="sortClick('price')">Price<i :class="sortIconPrice"></i></th>
+                                    <th class="sort" v-on:click="sortClick('category')">Category<i :class="sortIconCategory"></i></th>
+                                    <th>
+                                        <button class="btn btn-light" v-on:click="resetSearchSort">Reset</button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
                                     <th>Name</th>
                                     <th>Description</th>
                                     <th>Stock</th>
